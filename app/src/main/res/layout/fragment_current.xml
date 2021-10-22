@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+
+    <data>
+
+        <variable
+            name="currentWeatherState"
+            type="com.patika.graduationproject.model.CurrentWeatherStateModel" />
+    </data>
+
+    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="50dp">
+
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:orientation="vertical">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/cityName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="30dp"
+                android:fontFamily="@font/aclonica"
+                android:text="@{currentWeatherState.name}"
+                android:textColor="@color/purple"
+                android:textSize="28sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="İstanbul" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/weatherIcon"
+                imageUrl="@{currentWeatherState.weatherStateIconUrl}"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="30dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/cityName"
+                tools:src="@drawable/ic_cloud_cloudy_day_forecast_sun_icon" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/weatherType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/aclonica"
+                android:text="@{currentWeatherState.weatherText}"
+                android:textColor="@color/purple"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/weatherIcon"
+                tools:text="Cloudy" />
+
+            <LinearLayout
+                android:id="@+id/current_temp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/weatherType">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/temp_celsius"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/aclonica"
+                        android:text="@{currentWeatherState.tempCelsius}"
+                        android:textColor="@color/black_for_app"
+                        android:textSize="18sp"
+                        tools:text="30" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/temp_celsius_unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:src="@drawable/ic_celsius" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/temp_fahrenheit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/aclonica"
+                        android:text="@{currentWeatherState.tempFahrenheit}"
+                        android:textColor="@color/black_for_app"
+                        android:textSize="18sp"
+                        tools:text="50" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/temp_fahrenheit_unit"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:src="@drawable/ic_fahrenheit" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/current_feel_textview"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/aclonica"
+                android:text="Feels Like"
+                android:textColor="@color/purple"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/current_temp" />
+
+            <LinearLayout
+                android:id="@+id/current_feeling_temp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/current_feel_textview">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/temp_celsius_feeling"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/aclonica"
+                        android:text="@{currentWeatherState.tempCelsiusFeels}"
+                        android:textColor="@color/black_for_app"
+                        android:textSize="18sp"
+                        tools:text="30" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/temp_celsius_unit_feeling"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:src="@drawable/ic_celsius" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="50dp">
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/temp_fahrenheit_feeling"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:fontFamily="@font/aclonica"
+                        android:text="@{currentWeatherState.tempFahrenheitFeels}"
+                        android:textColor="@color/black_for_app"
+                        android:textSize="18sp"
+                        tools:text="50" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/temp_fahrenheit_unit_feeling"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        tools:src="@drawable/ic_fahrenheit" />
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/detail_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/rounded_button_purple"
+                android:text="Detail"
+                android:textAllCaps="false"
+                android:textColor="@color/grey"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/current_feeling_temp" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
+    </androidx.cardview.widget.CardView>
+</layout>
