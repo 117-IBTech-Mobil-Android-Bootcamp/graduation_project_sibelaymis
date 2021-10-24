@@ -1,10 +1,13 @@
 package com.patika.graduationproject.ui.currentweather
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.*
 import com.patika.graduationproject.model.CurrentWeatherStateModel
 import com.patika.graduationproject.Result
 import com.patika.graduationproject.model.City
 import com.patika.graduationproject.service.WeatherRepository
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class CurrentWeatherViewModel(private val weatherRepository: WeatherRepository) : ViewModel() {
@@ -22,7 +25,7 @@ class CurrentWeatherViewModel(private val weatherRepository: WeatherRepository) 
             val response = weatherRepository.getCurrentWeather(name)
             when (response) {
                 is Result.Success -> {
-                    currentWeatherResponse.value = CurrentWeatherStateModel(response.data!!)
+                    currentWeatherResponse.value = CurrentWeatherStateModel(response.data?.currentWeatherList?.get(0)!!)
                 }
                 is Result.Error -> onError.value = Unit
             }
@@ -42,17 +45,20 @@ class CurrentWeatherViewModel(private val weatherRepository: WeatherRepository) 
         }
     }
 
+
+    @RequiresApi(Build.VERSION_CODES.O)
     fun prepareCurrentWeathers() {
 
         viewModelScope.launch {
 
-            val movieListResponseFetchedFromDB = weatherRepository.getListAsync()
-            var weatherList = mutableListOf<CurrentWeatherStateModel>()
-            movieListResponseFetchedFromDB.currentWeatherList.forEach {
-                weatherList.add(CurrentWeatherStateModel(it))
-            }
+            weatherRepository.getCurrents().collect {
+                val weatherList = mutableListOf<CurrentWeatherStateModel>()
+                it.currentWeatherList.forEach {
+                    weatherList.add(CurrentWeatherStateModel(it))
+                }
 
-            currentWeatherListResponse.value = weatherList
+                currentWeatherListResponse.value = weatherList
+            }
         }
     }
 }

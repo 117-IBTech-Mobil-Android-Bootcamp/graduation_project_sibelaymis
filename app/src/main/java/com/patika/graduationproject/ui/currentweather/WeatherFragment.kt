@@ -1,5 +1,6 @@
 package com.patika.graduationproject.ui.currentweather
 
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -12,6 +13,7 @@ import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
 import android.view.LayoutInflater
 import android.view.View
+import androidx.annotation.RequiresApi
 import androidx.appcompat.widget.AppCompatButton
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.fragment.app.Fragment
@@ -23,7 +25,7 @@ class WeatherFragment : BaseFragment<CurrentWeatherViewModel, FragmentWeatherBin
 
     private var currentWeatherStateModel = mutableListOf<CurrentWeatherStateModel>()
     private var cities = arrayOf<String>()
-    lateinit var adapter:ArrayAdapter<String>
+    lateinit var adapter: ArrayAdapter<String>
 
     override val viewModel: CurrentWeatherViewModel by viewModel()
 
@@ -43,42 +45,47 @@ class WeatherFragment : BaseFragment<CurrentWeatherViewModel, FragmentWeatherBin
             it.let {
                 currentWeatherStateModel.asReversed().add(it)
                 setUpImageViewPager(currentWeatherStateModel)
+                val notingChoose = view?.findViewById<AppCompatTextView>(R.id.notingChoose)
+                notingChoose?.gone()
             }
         })
 
         viewModel.currentWeatherListResponse.observe(this, {
-            currentWeatherStateModel=it
+            currentWeatherStateModel = it.asReversed()
             setUpImageViewPager(currentWeatherStateModel)
-            if(!currentWeatherStateModel.isEmpty()) {
-                val notingChoose=view?.findViewById<AppCompatTextView>(R.id.notingChoose)
+            if (!currentWeatherStateModel.isEmpty()) {
+                val notingChoose = view?.findViewById<AppCompatTextView>(R.id.notingChoose)
                 notingChoose?.gone()
             }
         })
 
         viewModel.searchedWeatherResponse.observe(this, {
 
-            var index=0
-            val mutableArray= mutableListOf<String>()
+            var index = 0
+            val mutableCityArray = mutableListOf<String>()
             it.forEach { city ->
-                mutableArray.add(index,city.name)
+                if (!mutableCityArray.contains(city.name)) {
+                    mutableCityArray.add(index, city.name)
                     index++
                 }
-            this.cities = mutableArray.toTypedArray()
+            }
+            this.cities = mutableCityArray.toTypedArray()
             adapter = ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, cities)
             autoCompleteTextView.setAdapter(adapter)
 
         })
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun prepareView() {
         backgroundColorChange(R.color.grey)
-        //db'den kaydedilen şehirler alınacak
+
         viewModel.prepareCurrentWeathers()
         setUpImageViewPager(currentWeatherStateModel)
 
         autoCompleteTextView.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                if(s?.length!! >2) {
+                if (s?.length!! > 2) {
                     viewModel.name = s.toString()
                     viewModel.getSearchedWeather()
                 }
@@ -91,26 +98,27 @@ class WeatherFragment : BaseFragment<CurrentWeatherViewModel, FragmentWeatherBin
             }
         })
 
-        autoCompleteTextView.onItemClickListener= AdapterView.OnItemClickListener{
-                parent, _, position, _ ->
-            val selectedItem = parent.getItemAtPosition(position).toString()
-            viewModel.name=selectedItem
-            viewModel.getCurrentWeather()
-        }
+        autoCompleteTextView.onItemClickListener =
+            AdapterView.OnItemClickListener { parent, _, position, _ ->
+                val selectedItem = parent.getItemAtPosition(position).toString()
+                viewModel.name = selectedItem
+                viewModel.getCurrentWeather()
+            }
 
 
     }
 
     private fun setUpImageViewPager(currentWeatherStateModel: List<CurrentWeatherStateModel>) {
         if (currentWeatherStateModel.isNotEmpty()) {
-            viewPager.adapter = WeatherPagerAdapter(requireContext(), currentWeatherStateModel){
-                    clickedObject ->
-                navigateFragment(
-                    R.id.action_weatherFragment_to_weatherDetailFragment,
-                    Bundle().apply {
-                        putString("cityName", clickedObject.getName())
-                    })
-            }
+            viewPager.adapter =
+                WeatherPagerAdapter(requireContext(), currentWeatherStateModel) { clickedObject ->
+                    autoCompleteTextView.setText("")
+                    navigateFragment(
+                        R.id.action_weatherFragment_to_weatherDetailFragment,
+                        Bundle().apply {
+                            putString("cityName", clickedObject.getName())
+                        })
+                }
         }
     }
 }

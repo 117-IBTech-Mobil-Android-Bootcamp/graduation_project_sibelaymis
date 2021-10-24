@@ -46,31 +46,23 @@ fun Fragment.onBack() =
 
     })
 
-inline fun<reified T> Fragment.saveData(key: String, list: MutableList<T>?){
-    val sharedPreferences: SharedPreferences = requireActivity().getSharedPreferences("FavoriteList",
+inline fun<reified T> Fragment.saveData(key: String, value:String){
+    val sharedPreferences: SharedPreferences = requireActivity().getSharedPreferences("Today",
         Context.MODE_PRIVATE
     )
 
     val myEdit = sharedPreferences.edit()
-    val gson = Gson()
-    val json = gson.toJson(list)
-    myEdit.putString(key, json)
+    myEdit.putString(key, value)
 
     myEdit.commit()
 }
 
-inline fun<reified T> Fragment.getData(key : String): MutableList<T>? {
-    val sharedPreferences: SharedPreferences = requireActivity().getSharedPreferences("FavoriteList",
+inline fun<reified T> Fragment.getData(key : String): String? {
+    val sharedPreferences: SharedPreferences = requireActivity().getSharedPreferences("Today",
         Context.MODE_PRIVATE
     )
-    var arrayItems: MutableList<T> = mutableListOf()
-    val serializedObject = sharedPreferences.getString(key, null)
-    if (serializedObject != null) {
-        val gson = Gson()
-        val type: Type = object : TypeToken<MutableList<T?>?>() {}.type
-        arrayItems = gson.fromJson(serializedObject, type)
-    }
-    return  arrayItems
+    val value = sharedPreferences.getString(key, null)
+    return  value
 }
 
 fun Fragment.showToast(messageToShow : String){

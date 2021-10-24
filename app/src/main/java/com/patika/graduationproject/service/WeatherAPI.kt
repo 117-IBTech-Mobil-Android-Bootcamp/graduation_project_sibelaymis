@@ -17,6 +17,6 @@ interface WeatherAPI {
     suspend fun getDetails(@QueryMap params : MutableMap<String, Any>) : WeatherDetailResponse?
 
     @GET("search.json")
-    suspend fun getSearchedWeather(@QueryMap params : MutableMap<String, Any>) : List<City>
+    suspend fun getSearchedWeather(@QueryMap params : MutableMap<String, Any>) : List<City>?
 
 }

@@ -5,7 +5,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.patika.graduationproject.model.Current
 
-@Database(entities = [Current::class], version = 4)
+@Database(entities = [Current::class], version = 5)
 @TypeConverters(Converters::class)
 abstract class WeatherDB : RoomDatabase() {
 

@@ -1,5 +1,7 @@
 package com.patika.graduationproject.service
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.patika.graduationproject.service.response.CurrentWeatherResponse
 import com.patika.graduationproject.service.response.WeatherDetailResponse
 import com.patika.graduationproject.util.API_KEY
@@ -9,10 +11,32 @@ import com.patika.graduationproject.model.City
 import com.patika.graduationproject.model.Current
 import com.patika.graduationproject.model.Location
 import com.patika.graduationproject.service.response.CurrentWeatherListResponse
+import kotlinx.coroutines.flow.flow
+import java.time.LocalDateTime
+import java.util.*
 
 class WeatherRepository(private val api: WeatherAPI, private val weatherDao: WeatherDao) {
 
-    suspend fun getCurrentWeather(name: String): Result<CurrentWeatherResponse> {
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun getCurrents() = flow {
+        getListAsync().currentWeatherList
+            .let { currentWeatherList ->
+                if (currentWeatherList.isNotEmpty() && currentWeatherList[0].location.localtime.subSequence(
+                        0,
+                        10
+                    ) != LocalDateTime.now().toString().subSequence(0, 10)
+                ) {
+                    currentWeatherList.forEach { weatherList ->
+                        getCurrentWeather(weatherList.location.name)
+                    }
+                    emit(getListAsync())
+                } else {
+                    emit(getListAsync())
+                }
+            }
+    }
+
+    suspend fun getCurrentWeather(name: String): Result<CurrentWeatherListResponse> {
 
         val params = mutableMapOf<String, Any>().apply {
             put("key", API_KEY)
@@ -22,24 +46,26 @@ class WeatherRepository(private val api: WeatherAPI, private val weatherDao: Wea
         }
         val response = api.getCurrentWeather(params)
         return if (response != null) {
-            response.current.time=response.location.localtime
-            response.current.name=response.location.name
+            response.current.time = response.location.localtime
+            response.current.name = response.location.name
             insertDataAsync(response.current)
-            Result.Success(response)
+            Result.Success(CurrentWeatherListResponse(listOf(response)))
         } else {
             Result.Error("Bir hata meydana geldi.")
         }
     }
+
     suspend fun insertDataAsync(current: Current) = weatherDao.insertCurrentWeather(current)
 
     suspend fun getListAsync(): CurrentWeatherListResponse {
         val weatherList = weatherDao.fetchCurrentWeathers()
-        var currentWeatherListResponse= mutableListOf<CurrentWeatherResponse>()
+        val currentWeatherListResponse = mutableListOf<CurrentWeatherResponse>()
         weatherList.forEach {
-            currentWeatherListResponse.add(CurrentWeatherResponse(Location(it.name,it.time),it))
+            currentWeatherListResponse.add(CurrentWeatherResponse(Location(it.name, it.time), it))
         }
         return CurrentWeatherListResponse(currentWeatherListResponse)
     }
+
     suspend fun getWeatherDetail(name: String): Result<WeatherDetailResponse> {
 
         val params = mutableMapOf<String, Any>().apply {

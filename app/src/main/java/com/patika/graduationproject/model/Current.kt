@@ -13,10 +13,6 @@ data class Current(
     @ColumnInfo(name = "feelsCelsiusTemp") @SerializedName("feelslike_c") val feelsCelsiusTemp:Double,
     @ColumnInfo(name = "feelsFahrenheitTemp") @SerializedName("feelslike_f") val feelsFahrenheitTemp:Double,
     @ColumnInfo(name = "time") @SerializedName("time") var time:String="",
-    @ColumnInfo(name = "name") var name:String="",
+    @PrimaryKey @ColumnInfo(name = "name") var name:String="",
     @ColumnInfo(name = "condition") val condition: Condition
-){
-    @PrimaryKey(autoGenerate = true)
-    var UId:Int=0
-
-}
+)
