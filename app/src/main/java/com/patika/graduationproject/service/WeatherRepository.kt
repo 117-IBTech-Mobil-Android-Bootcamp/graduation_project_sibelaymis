@@ -11,6 +11,7 @@ import com.patika.graduationproject.model.City
 import com.patika.graduationproject.model.Current
 import com.patika.graduationproject.model.Location
 import com.patika.graduationproject.service.response.CurrentWeatherListResponse
+import com.patika.graduationproject.util.ERROR_MESSAGE
 import kotlinx.coroutines.flow.flow
 import java.time.LocalDateTime
 import java.util.*
@@ -51,7 +52,7 @@ class WeatherRepository(private val api: WeatherAPI, private val weatherDao: Wea
             insertDataAsync(response.current)
             Result.Success(CurrentWeatherListResponse(listOf(response)))
         } else {
-            Result.Error("Bir hata meydana geldi.")
+            Result.Error(ERROR_MESSAGE)
         }
     }
 
@@ -79,7 +80,7 @@ class WeatherRepository(private val api: WeatherAPI, private val weatherDao: Wea
         return if (response != null) {
             Result.Success(response)
         } else {
-            Result.Error("Bir hata meydana geldi.")
+            Result.Error(ERROR_MESSAGE)
         }
     }
 
@@ -93,7 +94,7 @@ class WeatherRepository(private val api: WeatherAPI, private val weatherDao: Wea
         return if (response != null) {
             Result.Success(response)
         } else {
-            Result.Error("Bir hata meydana geldi.")
+            Result.Error(ERROR_MESSAGE)
         }
     }
 }
